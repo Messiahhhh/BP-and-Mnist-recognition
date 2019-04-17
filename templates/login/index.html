@@ -1,0 +1,227 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}base{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+     <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">ChangetheDir</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index/">BP-Neural-Network</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="my-nav">
+          <ul class="nav navbar-nav">
+            <li><a href="/indexDri/">Y=Sinx</a></li>
+          </ul>
+        <ul class="nav navbar-nav">
+            <li><a href="/indexper/">Y=X**2</a></li>
+          </ul>
+            <ul class="nav navbar-nav">
+            <li><a href="/indextran/">Y=X1+X2</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    {% block content %}
+<body style="background-image: url({% static 'images/bd4902e66089f12948875c6d440b7eb8_2_3_art.png' %});background-size:100%;" >
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+                    相关信息
+                    <input type="button" class="btn btn-primary" id="change"value="修改">
+				</h1>
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="C_S" class="table">  </div>
+			<table class="table table-striped table-hover" id="tra">
+			</table>
+
+{#            </form>#}
+		</div>
+	</div>
+</div>
+<div class="modal" id="eidtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑信息</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fm" class="form-horizontal" >
+                    <input type="text" name="nid" style="display: none" />
+
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="user" placeholder="姓名">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                         <input type="text" class="form-control" name="gender" placeholder="男/女">
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">出生年月</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="birth" placeholder="出生年月日(xxxx/xx/xx)">
+                        </div>
+                    </div>
+                       <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">现居地</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="location" placeholder="城市(北京)">
+                        </div>
+                    </div>
+                       <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">电子邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="email" placeholder="电子邮箱(xxxx@xx.xx)">
+                        </div>
+                    </div>
+                      <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">工作状态</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="ws" placeholder="正常/离职">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/js/jquery-3.2.1.js"></script>
+        <script type="text/javascript">
+
+var data = eval('{{data|safe}}');
+var tableobj=document.getElementById("C_S");
+var tj=document.getElementById("tra");
+if(data[0].length==9) {
+    tj.innerHTML += '<tr nid="wnum"><td na="type">' + '工号'.bold() + '</td><td na="wvalue">' + data[0][0] +'</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="nnum"><td na="type">' + '用户名'.bold() + '</td><td na="nvalue">' + data[0][1] +'</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="nnum"><td na="type">' + '姓名'.bold()+ '</td><td na="nvalue">' + data[0][6] +'</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="gnum"><td na="type">' + '性别'.bold() + '</td><td na="gvalue">' + data[0][2] + '</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="bnum"><td na="type">' + '出生年月'.bold() + '</td><td na="bvalue">' + data[0][3] +'</td><td>'+'</td></tr>';
+    tj.innerHTML += '<tr nid="lnum"><td na="type">' + '现居地'.bold() + '</td><td na="lvalue">' + data[0][4] + '</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="enum"><td na="type">' + '电子邮箱'.bold() + '</td><td na="evalue">' + data[0][5] +'</td><td>'+ '</td></tr>';
+    tj.innerHTML += '<tr nid="enum"><td na="type">' + '工作状态'.bold() + '</td><td na="evalue">' + data[0][8] +'</td><td>'+ '</td></tr>';
+}
+else{
+    document.getElementById("change").style.display="none"
+    tj.innerHTML+='<tr><td>'+'驾照号'.bold()+'</td><td>'+data[0][0]+'</td></tr>';
+     tj.innerHTML+='<tr><td>'+'驾照等级'.bold()+'</td><td>'+data[0][3]+'</td></tr>';
+tj.innerHTML+='<tr><td>'+'驾龄'.bold()+'</td><td>'+data[0][1]+'</td></tr>';
+tj.innerHTML+='<tr><td>'+'违章次数'.bold()+'</td><td>'+data[0][2]+'</td></tr>';
+
+}
+      $(function () {
+        bindEdit();
+        bindEditConfirm();
+       // bindEvent();
+        //bindSave();
+    });
+        function bindEditConfirm() {
+            $('#btnEditSave').click(function() {
+                /*获取表单所有信息方式
+                1、使用each循环
+                2、var data = $('#form表单的ID').serialize()   （优化推荐）
+                    data存为字典类型，可直接调用
+                */
+                var postData = {};
+                postData["ID"]=data[0][0];
+                var n="user"
+                var v=$('#eidtModal input[name="user"]').val();
+                postData[n]=v;
+                var n="gender"
+                var v=$('#eidtModal input[name="gender"]').val();
+                postData[n]=v;
+                var n="birth"
+                var v=$('#eidtModal input[name="birth"]').val();
+                postData[n]=v;
+                var n="location"
+                var v=$('#eidtModal input[name="location"]').val();
+                postData[n]=v;
+                var n="email"
+                var v=$('#eidtModal input[name="email"]').val();
+                postData[n]=v;
+                  var n="ws"
+                var v=$('#eidtModal input[name="ws"]').val();
+                postData[n]=v;
+                $.ajax({
+                    url: '/indexDriupdate',
+                    type: 'GET',
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#eidtModal').modal('hide');
+                        tj.rows[2].cells[1].innerText=arg['user'];
+                        tj.rows[3].cells[1].innerText=arg['gender'];
+                        tj.rows[4].cells[1].innerText=arg['birth'];
+                        tj.rows[5].cells[1].innerText=arg['location'];
+                        tj.rows[6].cells[1].innerText=arg['email'];
+                         tj.rows[7].cells[1].innerText=arg['ws'];
+                    }
+                });
+            });
+        }
+        //绑定编辑按钮点击事件
+        function bindEdit() {
+            $('#change').on('click',function() {
+                //显示框
+                $('#eidtModal').modal('show');
+                //获取当前行的所以数据
+                $('#eidtModal input[name="user"]').val(data[0][6]);
+                $('#eidtModal input[name="gender"]').val(data[0][2]);
+                $('#eidtModal input[name="birth"]').val(data[0][3]);
+                $('#eidtModal input[name="location"]').val(data[0][4]);
+                $('#eidtModal input[name="email"]').val(data[0][5]);
+                 $('#eidtModal input[name="ws"]').val(data[0][8]);
+            });
+        }
+</script>
+    {% endblock %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

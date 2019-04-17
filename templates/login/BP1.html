@@ -1,0 +1,505 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}base{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+     <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">ChangetheDir</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index/">BP-Neural-Network</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+
+      </div><!-- /.container-fluid -->
+    </nav>
+    {% block content %}
+<body style="background-image: url({% static 'images/bd4902e66089f12948875c6d440b7eb8_2_3_art.png' %});background-size:100%;" >
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+                    <input type="button" class="btn btn-primary" id="change1" value="参数设置">
+                    <input type="button" class="btn btn-primary" id="change2" value="开始训练">
+                           <input type="button" href="/TrainBP/" class="btn btn-primary" id="change3" value="显示网络结构">
+				</h1>
+                <div class="col-xs-6" id="graph" style="height:600px"></div>
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+		</div>
+	</div>
+</div>
+        <div class="modal" id="eidtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">参数设置</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fm" class="form-horizontal" >
+{#                    <input type="text" id="InputArea" style="display: none" />#}
+                               <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">输入层神经元数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="InputArea" placeholder="XX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">隐层层数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="HidelayerNum" placeholder="XX">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">各隐层神经元数</label>
+                        <div class="col-sm-10">
+                         <input type="text" class="form-control" id="NumHidelayer" placeholder="X,X,X">
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">输出层神经元数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="OutputArea" placeholder="XX">
+                        </div>
+                    </div>
+                       <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">学习率</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="lr" placeholder="X.XX">
+                        </div>
+                    </div>
+                       <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">迭代次数</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="TM" placeholder="XX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="col-sm-2 control-label">拟合函数</label>
+                        <select class="selectpicker show-tick form-control" style="width:90px;height: 42px" id="select1" name="grant" data-live-search="true">
+                    <option>SinX</option>
+                  <option>X^2</option>
+                            <option>X1+X2</option>
+            </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditSave">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+            <div class="col-xs-6" id="myDiv2" style="height:600px"></div>
+            <div class="col-xs-6" id="myDiv1" style="height:600px"></div>
+        <table class="table table-striped table-hover" id="tra"></table>
+<script src="/static/js/jquery-3.2.1.js"></script>
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script type="text/javascript">
+               $(function () {
+        bindEdit();
+        bindEditConfirm();
+        showNet();
+        train();
+       // bindEvent();
+        //bindSave();
+    });
+               function train()
+               {
+                   $('#change2').on('click',function(){
+
+                   });
+               }
+               /*function showNet()
+               {
+                          $('#change3').on('click', function () {
+                        //显示框
+                        {#$('#structure').modal('show');#}
+                        //获取当前行的所以数
+                       var postData={};
+                        postData["inputArea"]=$("#InputArea").val();
+                        postData["HidelayerNum"]=$("#HidelayerNum").val();
+                        postData["NumHidelayer"]=$("#NumHidelayer").val();
+                        postData["OutputArea"]=$("#OutputArea").val();
+                        postData["lr"]=$("#lr").val();
+                        postData["TM"]=$("#TM").val();
+                        $.ajax({
+                    url: '/InitBp',
+                    type: 'GET',
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                        $('#eidtModal').modal('hide');
+                        var elem=document.getElementById("drawing");//获取控件
+                        elem.style.position = "absolute";//设置绝对定位（或者相对定位）
+                        elem.style.left = "500px";//设置left数值
+                        elem.style.top = "230px";//设置top数值
+                        if (elem.getContext) {
+                            var context = elem.getContext("2d");
+                            var IP=parseInt(postData["inputArea"]);
+                            var HN=parseInt(postData["HidelayerNum"]);
+                            var NH=postData["NumHidelayer"];
+                            NH=NH.split(",");
+                            var OA=parseInt(postData["OutputArea"]);
+                            var posx=0;
+                            var posy=0;
+                            var node=new Array();
+                            for(var i=0;i<HN+2;i++)
+                            {
+                                node[i]=new Array();
+                            }
+                            if(IP%2==0)
+                            {
+                                posx=30;
+                                posy=125;
+                                var XY=new Array();
+                                for(var i=0;i<IP/2;i++)
+                                {
+                                    var XY=new Array();
+                                    posy-=50;
+                                    context.beginPath();
+                                    context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                                    XY.push(posx);
+                                    XY.push(posy);
+                                    node[0].push(XY);
+                                    context.stroke();
+                                }
+                                posy=125;
+                                for(var i=0;i<IP/2;i++)
+                                {
+                                    var XY=new Array();
+                                    posy+=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                                    XY.push(posx);
+                                    XY.push(posy);
+                                    node[0].push(XY);
+                                }
+                            }
+                            else{
+                                posx=30;
+                                posy=125;
+                                IP-=1;
+                                 context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[0].push(XY);
+                                for(var i=0;i<IP/2;i++)
+                                {
+                                    posy-=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[0].push(XY);
+                                }
+                                posy=125;
+                                for(var i=0;i<IP/2;i++)
+                                {
+                                    posy+=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[0].push(XY);
+
+                                }
+
+                            }
+                            posx=110;
+                            posy=125;
+                            for(var i=0;i<HN;i++) {
+                                var tmp=parseInt(NH[i]);
+                                if (tmp % 2 == 0) {
+                                    posy = 125;
+                                    for (var j = 0; j < tmp / 2; j++) {
+                                        posy -= 50;
+                                        context.beginPath();
+                                        context.arc(posx, posy, 20, 0, 2 * Math.PI, true);
+                                        context.stroke();
+                                        var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[i+1].push(XY);
+                                    }
+                                    posy = 125;
+                                    for (var k = 0; k < tmp / 2; k++) {
+                                        posy += 50;
+                                        context.beginPath();
+                                        context.arc(posx, posy, 20, 0, 2 * Math.PI, true);
+                                        context.stroke();
+                                        var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[i+1].push(XY);
+                                    }
+                                }
+                                else {
+                                    posy = 125;
+                                    tmp-=1;
+                                    context.beginPath();
+                                    context.arc(posx, posy, 20, 0, 2 * Math.PI, true);
+                                    var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[i+1].push(XY);
+                                    context.stroke();
+                                    for (var j = 0; j < tmp / 2; j++) {
+                                        posy -= 50;
+                                        context.beginPath();
+                                        context.arc(posx, posy, 20, 0, 2 * Math.PI, true);
+                                        context.stroke();
+                                        var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[i+1].push(XY);
+                                    }
+                                    posy = 125;
+                                    for (var k = 0; k < tmp / 2; k++) {
+                                        posy += 50;
+                                        context.beginPath();
+                                        context.arc(posx, posy, 20, 0, 2 * Math.PI, true);
+                                        context.stroke();
+                                        var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[i+1].push(XY);
+                                    }
+                                }
+                                posx+=100;
+                            }
+                            if(OA%2==0)
+                            {
+                                posy=125;
+                                var XY=new Array();
+                                for(var i=0;i<OA/2;i++)
+                                {
+                                    var XY=new Array();
+                                    posy-=50;
+                                    context.beginPath();
+                                    context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                                    XY.push(posx);
+                                    XY.push(posy);
+                                    node[HN+1].push(XY);
+                                    context.stroke();
+                                }
+                                posy=125;
+                                for(var i=0;i<OA/2;i++)
+                                {
+                                    var XY=new Array();
+                                    posy+=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                                    XY.push(posx);
+                                    XY.push(posy);
+                                    node[HN+1].push(XY);
+                                }
+                            }
+                            else{
+                                posy=125;
+                                OA-=1;
+                                 context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[HN+1].push(XY);
+                                for(var i=0;i<OA/2;i++)
+                                {
+                                    posy-=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[HN+1].push(XY);
+
+                                }
+                                posy=125;
+                                for(var i=0;i<OA/2;i++)
+                                {
+                                    posy+=50;
+                                     context.beginPath();
+                            context.arc(posx, posy, 20, 0, 2*Math.PI, true);
+                             context.stroke();
+                             var XY=new Array();
+                                XY.push(posx);
+                                XY.push(posy);
+                                node[HN+1].push(XY);
+                                }
+                            }
+                            for(var i=0;i<HN+1;i++)
+                            {
+                                for(var j=0;j<node[i].length;j++)
+                                {
+                                    for(var k=0;k<node[i+1].length;k++)
+                                    {
+
+                                        context.moveTo(node[i][j][0], node[i][j][1]);
+                                        context.lineTo(node[i+1][k][0], node[i+1][k][1]);
+                                        context.stroke();
+                                    }
+                                }
+                            }
+                    }
+                    }
+                });
+
+                    });
+               }*/
+
+               function bindEditConfirm()
+               {
+                   $('#btnEditSave').click(function(){
+                       var postData={};
+                        postData["inputArea"]=$("#InputArea").val();
+                        postData["HidelayerNum"]=$("#HidelayerNum").val();
+                        postData["NumHidelayer"]=$("#NumHidelayer").val();
+                        postData["OutputArea"]=$("#OutputArea").val();
+                        postData["lr"]=$("#lr").val();
+                        postData["TM"]=$("#TM").val();
+                        if($("#select1").val()=="SinX")
+                        {
+                            postData["kind"]=1
+                        }
+                        else if($("#select1").val()=="X^2")
+                        {
+                            postData["kind"]=2;
+                        }
+                        else{
+                            postData["kind"]=3;
+                        }
+                        $.ajax({
+                    url: '/InitBP',
+                    type: 'GET',
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                         $('#eidtModal').modal('hide');
+                        alert("ss");
+                        alert(arg['kind']);
+                        if(arg['kind']==1)
+                        {
+                            alert('hai');
+                            var n = 100;
+var x = [], y = [], z = [];
+var dt = 0.015;
+
+for (i = 0; i < n; i++) {
+  x[i] = Math.random() * 2 - 1;
+  y[i] = Math.random() * 2 - 1;
+  z[i] = 30 + Math.random() * 10;
+}
+
+Plotly.plot('graph', [{
+  x: x,
+  y: z,
+  mode: 'markers'
+}], {
+  xaxis: {range: [-40, 40]},
+  yaxis: {range: [0, 60]}
+})
+
+function compute () {
+  var s = 10, b = 8/3, r = 28;
+  var dx, dy, dz;
+  var xh, yh, zh;
+  for (var i = 0; i < n; i++) {
+    dx = s * (y[i] - x[i]);
+    dy = x[i] * (r - z[i]) - y[i];
+    dz = x[i] * y[i] - b * z[i];
+
+    xh = x[i] + dx * dt * 0.5;
+    yh = y[i] + dy * dt * 0.5;
+    zh = z[i] + dz * dt * 0.5;
+
+    dx = s * (yh - xh);
+    dy = xh * (r - zh) - yh;
+    dz = xh * yh - b * zh;
+
+    x[i] += dx * dt;
+    y[i] += dy * dt;
+    z[i] += dz * dt;
+  }
+}
+
+function update () {
+  compute();
+
+  Plotly.animate('graph', {
+    data: [{x: x, y: z}]
+  }, {
+    transition: {
+      duration: 0
+    },
+    frame: {
+      duration: 0,
+      redraw: false
+    }
+  });
+
+  requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
+                        }
+                    }
+                });
+                   });
+               }
+                function bindEdit() {
+                    $('#change1').on('click', function () {
+                        //显示框
+                        $('#eidtModal').modal('show');
+                    });
+                }
+
+</script>
+    {% endblock %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

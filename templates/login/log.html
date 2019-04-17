@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}LogIn{% endblock %}
+{% block css %}<link href="{% static 'css/login.css' %}" rel="stylesheet"/>{% endblock %}
+{% block content %}
+    <body style="background-image: url({% static 'images/back.jpg' %});background-size:100%;" >
+   <div class="container">
+       <div class="col-md-4 col-md-offset-4">
+         <form class='form-login' action="/login/" method="post">
+             {% if message %}
+                 <div class="alert alert-warning">{{ message }}</div>
+             {% endif %}
+             {% csrf_token %}
+             <h2 class="text-center" style="color: whitesmoke">欢迎！</h2>
+            <p style="color: whitesmoke">{{login_form }}</p>
+             <button type="reset" class="btn btn-default pull-left">重置</button>
+             <button type="submit" class="btn btn-primary pull-right">提交</button>
+             <select class="selectpicker show-tick form-control" style="width:90px;height: 42px" id="select1" name="grant" data-live-search="true">
+                    <option>司机</option>
+                  <option>管理员</option>
+            </select>
+         </form>
+       </div>
+   </div> <!-- /container -->
+    <script>
+        {% if message %}
+            var elem=document.getElementById("select1");//获取控件
+            elem.style.position = "absolute";//设置绝对定位（或者相对定位）
+            elem.style.left = "270px";//设置left数值
+            elem.style.top = "330px";//设置top数值
+        {% else%}
+            var elem=document.getElementById("select1");//获取控件
+            elem.style.position = "absolute";//设置绝对定位（或者相对定位）
+            elem.style.left = "270px";//设置left数值
+            elem.style.top = "270px";//设置top数值
+        {% endif %}
+    </script>
+{% endblock %}
+
+

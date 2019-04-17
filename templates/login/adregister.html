@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <body style="background-image: url({% static 'images/back.jpg' %});background-size:100%;" >
+   <div class="container">
+       <div class="col-md-4 col-md-offset-4">
+         <form class='form-register' action="/adregister/" method="post">
+
+             {% if message %}
+                 <div class="alert alert-warning">{{ message }}</div>
+             {% endif %}
+
+             {% csrf_token %}
+
+             <h2 class="text-center" style="color: whitesmoke">注册</h2>
+             <div class="form-group" style="color: whitesmoke">
+                 {{ register_form.adname.label_tag }}
+                 {{ register_form.adname}}
+             </div>
+             <div class="form-group" style="color: whitesmoke">
+                 {{ register_form.password1.label_tag }}
+                 {{ register_form.password1 }}
+             </div>
+             <div class="form-group" style="color: whitesmoke">
+                 {{ register_form.password2.label_tag }}
+                 {{ register_form.password2 }}
+             </div>
+             <button type="reset" class="btn btn-default pull-left">Reset</button>
+             <button type="submit" class="btn btn-primary pull-right">Submit</button>
+
+         </form>
+       </div>
+   </div> <!-- /container -->
+{% endblock %}
+
+

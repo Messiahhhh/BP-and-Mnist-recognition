@@ -1,0 +1,105 @@
+{% extends 'base2.html' %}
+{% load staticfiles %}
+{% block title %}StockManage{% endblock %}
+{% block content %}
+    <body style="background-image: url({% static 'images/index4.jpg' %});background-size:100%;" >
+
+     {% csrf_token %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				     Stock Quotes
+				</h1>
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="C_S" class="table">  </div>
+			<table class="table table-striped table-hover" id="tra">
+				<thead>
+					<tr>
+						<th>
+							Stock Code
+						</th>
+						<th>
+							Stock Name
+						</th>
+						<th>
+							Quotes
+						</th>
+                        <th>
+							More
+						</th>
+					</tr>
+				</thead>
+			</table>
+
+{#            </form>#}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var quo = eval('{{quo|safe}}');
+var tmp=eval('{{tmp|safe}}');
+var tableobj=document.getElementById("C_S");
+//var number=2;
+/*tableobj.innerHTML=tableobj.innerHTML+'<tr>'+'<td>'+data[0][0]+'</td><td>'+'<input type="hidden" value="" id="i1" name="m1">'+data[0][1]+'<input type="hidden" value="" id="x1" name="k1">'+'</td><td>'+'<button type="submit" id="s1"  class="btn btn-primary">Details</button>'+'</td>'+'</tr>';
+tableobj.innerHTML=tableobj.innerHTML+'<tr>'+'<td>'+data[1][0]+'</td><td>'+'<input type="hidden" value="" id="i2" name="m2">'+data[1][1]+'<input type="hidden" value="" id="x2" name="k2">'+'</td><td>'+'<button type="submit" id="s2"  class="btn btn-primary">Details</button>'+'</td>'+'</tr>';
+tableobj.innerHTML=tableobj.innerHTML+'<tr>'+'<td>'+data[2][0]+'</td><td>'+'<input type="hidden" value="" id="i3" name="m3">'+data[2][1]+'<input type="hidden" value="" id="x3" name="k3">'+'</td><td>'+'<button type="submit" id="s3"  class="btn btn-primary">Details</button>'+'</td>'+'</tr>';
+document.getElementById("i1").value=data[0][0];
+document.getElementById("i2").value=data[1][0];
+document.getElementById("i3").value=data[2][0];
+document.getElementById("x1").value=data[0][1];
+document.getElementById("x2").value=data[1][1];
+document.getElementById("x3").value=data[2][1];
+*/
+/*tableobj.innerHTML=tableobj.innerHTML+'<form method="GET" action="/StockTrading/>" id="in1" name="in1">'+'<input type="hidden" value="600841" id="in2"  name="in2">'+'<tr><td>'+data[0][0]+'</td><td>'+'<input type="hidden" value="上柴股份" id="in3" name="in3">'+data[0][1]+'</td><td>'+'<button type="submit" id="x"  class="btn btn-primary">Details</button>'+'</td></tr>'+'</form>';
+tableobj.innerHTML=tableobj.innerHTML+'<form method="GET" action="/StockTrading/>" id='+temp2+' name=temp2>'+'<input type="hidden" value="" id='+temp+'  name='+temp+'>'+'<tr><td>'+data[1][0]+'</td><td>'+'<input type="hidden" value="" id='+temp3+' name='+temp3+'>'+data[1][1]+'</td><td>'+'<button type="submit" id="x"  class="btn btn-primary">Details</button>'+'</td></tr>'+'</form>';
+tableobj.innerHTML=tableobj.innerHTML+'<form method="GET" action="/StockTrading/>" id='+temp2+' name=temp2>'+'<input type="hidden" value="" id='+temp+'  name='+temp+'>'+'<tr><td>'+data[2][0]+'</td><td>'+'<input type="hidden" value="" id='+temp3+' name='+temp3+'>'+data[2][1]+'</td><td>'+'<button type="submit" id="x"  class="btn btn-primary">Details</button>'+'</td></tr>'+'</form>';*/
+/*for(var i=0;i<data.length;i++)
+{
+   var tableobj=document.getElementById("C_S");
+   temp=data[i][0];
+   temp2=data[i][];
+   temp3="inp"+i;
+   tableobj.innerHTML=tableobj.innerHTML+'<form method="GET" action="/StockTrading/>" id='+temp2+' name=temp2>'+'<input type="hidden" value="" id='+temp+'  name='+temp+'>'+'<tr><td>'+data[i][0]+'</td><td>'+'<input type="hidden" value="" id='+temp3+' name='+temp3+'>'+data[i][1]+'</td><td>'+'<button type="submit" id="b"'+i+'  class="btn btn-primary">Details</button>'+'</td></tr>'+'</form>';
+   obj=document.getElementById(temp);
+   alert(obj);
+}*/
+var tj=document.getElementById("tra");
+for(var i=0;i<tmp.length;i++)
+{
+   temp=tmp[i][0];
+
+   tj.innerHTML+='<tr><td>'+tmp[i][0]+'</td><td>'+tmp[i][1]+'</td><td>'+quo[i]+'</td><td>'+'<form action="/StockTrading/" method="get"><input type="hidden" value='+temp+' name="code"><input type="submit" class="btn btn-primary" value="Details"></form>'+'</td></tr>';
+   {#tableobj.innerHTML=tableobj.innerHTML+'<form method="GET" action="/StockTrading/" id="f"'+i+' name="f"'+i+'>'+'<tr><td>'+'<input type="hidden" value="" id='+temp+'  name='+temp+'>'+data[i][0]+'</td><td>'+'<input type="hidden" value='+temp2+' id='+temp2+' name='+temp2+'>'+data[i][1]+'</td><td>'+'<button type="submit" id="b"'+temp2+' value="s" class="btn btn-primary" name="b"'+temp2+'>Details</button>'+'</td></tr>'+'</form>';#}
+   {# tableobj.innerHTML=tableobj.innerHTML+'<form action="/StockTrading/" method="get"><input type="hidden" value='+temp+' name="code"><input type="submit" class="btn btn-primary" value="submit"></form>'#}
+}
+
+/*document.getElementById("C_S").addEventListener('click',function(e){
+    var target = e.target || e.srcElement;
+    rowIndex = target.parentNode.parentNode.rowIndex;
+    var tabl=document.getElementById("C_S");*/
+        /*$.ajax({
+    url: "http://127.0.0.1:8000/StockTrading/",
+    data: {    // JSON格式封装数据
+        stock_code:tabl.rows[rowIndex-1].cells[0].innerHTML,
+        stock_name:tabl.rows[rowIndex-1].cells[1].innerHTML
+    },
+            datatype:'JSON',
+    contentType: 'application/json',
+    type: "GET",
+    success: function(result){
+        window.open("http://127.0.0.1:8000/StockTrading/")
+
+
+    },
+    fail: function(result) {
+        alert("ddd")
+    }
+
+});
+    alert(tabl.rows[rowIndex-1].cells[0].innerHTML);*/
+//});
+</script>
+{% endblock %}

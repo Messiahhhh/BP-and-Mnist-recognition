@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}search_results{% endblock %}
+{% block content %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% elif  stock_code and stock_name  %}
+        <div class="row">
+            <div class="col-xs-6" id="myDiv2" style="height:600px"></div>
+            <div class="col-xs-6" id="myDiv" style="height:600px"></div>
+            <form method="GET" action="/follow/">
+                <input type="hidden" value={{stock_name}} name="s">
+                <button type="submit" id="bu1" class="btn btn-primary" data-toggle="modal"  data-target="#myModal" >Follow</button>
+            </form>
+            <form method="GET" action="/unfollow/">
+                <input type="hidden" value={{stock_name}} name="s">
+                <button type="submit" id="bu2" class="btn btn-primary" >Unfollow</button>
+            </form>
+        </div>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script>
+            <!--data_transport-->
+            var elem=document.getElementById("bu1");//获取控件
+            elem.style.position = "absolute";//设置绝对定位（或者相对定位）
+            elem.style.left = "600px";//设置left数值
+            elem.style.top = "800px";//设置top数值
+            var elem=document.getElementById("bu2");//获取控件
+            elem.style.position = "absolute";//设置绝对定位（或者相对定位）
+            elem.style.left = "1200px";//设置left数值
+            elem.style.top = "800px";//设置top数值
+            var data = eval('{{data|safe}}');
+            var stock_name = '{{stock_name|safe}}';
+            var trace = {
+                x: data[data.length-1],
+                close: data[2],
+                high: data[1],
+                low: data[3],
+                open: data[0],
+        // cutomise colors
+                increasing: {line: {color: 'red'}},
+                decreasing: {line: {color: 'green'}},
+                type: 'candlestick',
+                xaxis: 'x',
+                yaxis: 'y'
+            };
+            var data = [trace];
+            var layout = {
+                width:1000,
+                height:700,
+                plot_bgcolor:'#0c0c0c',
+                dragmode: 'zoom',
+                xaxis: {
+                    showline:false,
+                    showgrid:true,
+                    zeroline:false,
+                    gridcolor:'#ffffff',
+                    autorange: true,
+                    title: 'K-line'+stock_name,
+                    titlefont:{
+                        'size':15,
+                        'color':'#000000,'
+                    },
+                    rangeselector: {
+                        x: 0,
+                        y: 1.2,
+                        xanchor: 'left',
+                        font: {size:20},
+                        buttons: [{
+                            step: 'month',
+                            stepmode: 'backward',
+                            count: 1,
+                            label: '1 month'
+                        }, {
+                            step: 'month',
+                            stepmode: 'backward',
+                            count: 6,
+                            label: '6 months'
+                        }, {
+                            step: 'all',
+                            label: 'All dates'
+                        }]
+                    }
+                    },
+                yaxis: {
+                    autorange: true,
+                    showline:false,
+                    showgrid:true,
+                    zeroline:false,
+                    gridcolor:'#ffffff'
+                }
+            };
+            Plotly.plot('myDiv', data, layout);
+        </script>
+         <script>
+            <!--data_transport-->
+            var data = eval('{{data|safe}}');
+            var stock_name = '{{stock_name|safe}}';
+            var trace = {
+                type:'scatter',
+                x:data[data.length-1],
+                y:data[7],
+                mode:'lines',
+                name:'ma5',
+                line: {
+    color: 'rgb(248, 248, 255)',
+    width: 1
+  }
+            };
+            var data = [trace];
+            var layout = {
+                width:1000,
+                height:700,
+                plot_bgcolor:'#0c0c0c',
+                dragmode: 'zoom',
+                xaxis: {
+                    showline:false,
+                    showgrid:true,
+                    zeroline:false,
+                    gridcolor:'#ffffff',
+                    autorange: true,
+                    title:'Trend'+stock_name,
+                    titlefont:{
+                        'size':15,
+                        'color':'#000000,'
+                    },
+                    rangeselector: {
+                        x: 0,
+                        y: 1.2,
+                        xanchor: 'left',
+                        font: {size:15},
+                        buttons: [{
+                            step: 'month',
+                            stepmode: 'backward',
+                            count: 1,
+                            label: '1 month'
+                        }, {
+                            step: 'month',
+                            stepmode: 'backward',
+                            count: 6,
+                            label: '6 months'
+                        }, {
+                            step: 'all',
+                            label: 'All dates'
+                        }]
+                    }
+                    },
+                yaxis: {
+                    autorange: true,
+                    showline:false,
+                    showgrid:true,
+                    zeroline:false,
+                    gridcolor:'#ffffff'
+                }
+            };
+            Plotly.plot('myDiv2', data, layout);
+        </script>
+    {% else %}
+        <p>There's no such a stock!</p>
+    {% endif %}
+
+{% endblock %}

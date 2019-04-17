@@ -1,0 +1,496 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}base{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+     <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">ChangetheDir</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">车辆管理系统</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="my-nav">
+          <ul class="nav navbar-nav">
+            <li><a href="/Drivers/">司机信息</a></li>
+          </ul>
+        <ul class="nav navbar-nav">
+            <li><a href="/Car/">车辆信息</a></li>
+          </ul>
+         <ul class="nav navbar-nav">
+            <li><a href="/Fix/">维修信息</a></li>
+          </ul>
+         <ul class="nav navbar-nav">
+            <li><a href="/TransPort/">运输信息</a></li>
+          </ul>
+
+      <form class="navbar-form navbar-left" method="get" id="searchform" action="/searchfix/">
+        <div class="form-group">
+            {% csrf_token %}
+          <input type="search" name="q" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+                        <select class="selectpicker show-tick form-control" style="width:90px;height: 38px" id="select1" name="grant" data-live-search="true">
+                    <option>按车牌号</option>
+                  <option>按车状态</option>
+                  <option>按维修公司</option>
+            </select>
+      </form>
+          <ul class="nav navbar-nav navbar-right">
+              {% if request.session.is_login %}
+                  <li><a href="#">Online：{{ request.session.user_name }}</a></li>
+                 <li><a href="/logout/">登出</a></li>
+              {% else %}
+                  <li><a href="/login/">登入</a></li>
+                  <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">注册<span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                        <li><a href="/register/" >Users</a></li>
+                           <li><a href="/Do_test/" >Administrators</a></li>
+                        </ul>
+                  </li>
+              {% endif %}
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+{% block content %}
+      <body style="background-image: url({% static 'images/bd4902e66089f12948875c6d440b7eb8_2_3_art.png' %});background-size:100%;" >
+    <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				    维修信息
+				</h1>
+                <input type="button" onclick="Add(this)" class="btn btn-primary" id='Ad' value="添加记录">
+                <input type="button" onclick="Static(this)" class="btn btn-primary" id='A' value="公司统计">
+                <input type="button" onclick="Ave(this)" class="btn btn-primary" id='A' value="维修均价统计">
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="C_S" class="table">  </div>
+			<table class="table table-striped table-hover" id="tra">
+
+                <thead>
+					<tr>
+						<th>
+							车牌号
+						</th>
+						<th>
+                            维修价格
+						</th>
+						<th>
+							维修日期
+						</th>
+                        <th>
+							维修公司
+						</th>
+                          <th>
+							车辆状态
+						</th>
+                          <th>
+							操作
+						</th>
+					</tr>
+				</thead>
+			</table>
+
+{#            </form>#}
+		</div>
+	</div>
+</div>
+      <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				     损坏车辆
+				</h1>
+                   <input type="button" onclick="Add(this)" class="btn btn-primary" id='Ad' value="添加记录">
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="sunhuai" class="table"> </div>
+			<table class="table table-striped table-hover" id="trb">
+                <thead>
+					<tr>
+						<th>
+							车牌号
+						</th>
+                        <th>
+                            车品牌
+                        <th>
+                          <th>
+							车辆状态
+						</th>
+                          <th>
+							操作
+						</th>
+					</tr>
+				</thead>
+			</table>
+{#            </form>#}
+		</div>
+	</div>
+</div>
+     <div class="modal fade" id="AveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">均价统计</h4>
+            </div>
+            <div class="modal-body" id="su">
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+           <div class="modal fade" id="StaticModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">维修公司统计</h4>
+            </div>
+            <div class="modal-body" id="ss">
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">维修信息</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fx" class="form-horizontal" >
+                    <input type="text" name="nid" style="display: none" />
+
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">车牌号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="user" placeholder="车牌号(XXXXXX)">
+                        </div>
+                    </div>
+                      <div class="form-group">
+                        <label for="pw" class="col-sm-2 control-label">维修价格</label>
+                        <div class="col-sm-10">
+                         <input type="text" class="form-control" name="fp" >
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">维修公司</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="fc" placeholder="XXX">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnAddSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="eidtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑信息</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fx" class="form-horizontal" >
+                    <input type="text" name="nid" style="display: none" />
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">车辆状态</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="cs" placeholder="正常/报废/维修中">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="/static/js/jquery-3.2.1.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript">
+var data = eval('{{data|safe}}');
+var tableobj=document.getElementById("C_S");
+var tj=document.getElementById("tra");
+var tao=document.getElementsById("sunhuai");
+var to=document.getElementById("trb");
+var i=0;
+for(i=0;i<data.length;i++)
+{
+   temp=data[i][0];
+   temp2=data[i][1];
+   tj.innerHTML+='<tr id='+i+'><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][4]+'</td><td>'+'<input type="button" onclick="test(this)" class="btn btn-primary" id='+i+' value="修改">'+'<input type="button" onclick="dele(this)" class="btn btn-primary" name='+i+' value="删除">'+'</td></tr>';
+}
+var trans=0;
+ $(function () {
+        bindEditConfirm();
+        bindAdd();
+    });
+     function Add(obj){
+                    $('#AddModal').modal('show');
+                //获取当前行的所以数据
+           $('#AddModal input[name="user"]').val("");
+           $('#AddModal input[name="fp"]').val("");
+                $('#AddModal input[name="fc"]').val("");
+}
+     function Ave(obj){
+                  $('#AveModal').modal('show');
+         var type={};
+         var tmp={};
+for(var j=0;j<data.length;j++)
+{
+    type[data[j][3]]=0;
+    tmp[data[j][3]]=0;
+}
+for(var j=0;j<data.length;j++)
+{
+    type[data[j][3]]+=parseFloat(data[j][1]);
+    tmp[data[j][3]]++;
+}
+for(var key in type)
+{
+    type[key]/=tmp[key];
+}
+var labels=[];
+var dat=[];
+for(var key in type)
+{
+    labels.push(key);
+    dat.push(type[key]);
+}
+
+                //获取当前行的所以数据
+                        var hua = [{
+            y: dat,
+            x: labels,
+            type: 'bar'
+
+            }];
+
+            var layout = {
+                title:"均价分布",
+  height: 400,
+  width: 500
+};
+Plotly.newPlot('su', hua, layout);
+}
+     function Static(obj){
+                  $('#StaticModal').modal('show');
+         var type={};
+for(var j=0;j<data.length;j++)
+{
+    type[data[j][3]]=0;
+}
+for(var j=0;j<data.length;j++)
+{
+    type[data[j][3]]++;
+}
+var labels=[];
+var dat=[];
+for(var key in type)
+{
+    labels.push(key);
+    dat.push(type[key]);
+}
+                //获取当前行的所以数据
+                        var hua = [{
+            values: dat,
+            labels: labels,
+            type: 'pie'
+
+            }];
+
+            var layout = {
+                title:"品牌分布",
+
+  height: 400,
+  width: 500
+};
+Plotly.newPlot('ss', hua, layout);
+}
+    function bindAdd() {
+            $('#btnAddSave').click(function() {
+                /*获取表单所有信息方式
+                1、使用each循环
+                2、var data = $('#form表单的ID').serialize()   （优化推荐）
+                    data存为字典类型，可直接调用
+                */
+                var postData={};
+                var n="user";
+                var v=$('#AddModal input[name="user"]').val();
+                postData[n]=v;
+                var n="fp"
+                var v=$('#AddModal input[name="fp"]').val();
+                postData[n]=v;
+
+                var n="fc";
+                var v=$('#AddModal input[name="fc"]').val();
+                postData[n]=v;
+                //alert(postData['gender']);
+                $.ajax({
+                    url: '/FixAdd',
+                    type: 'GET',
+                    data: postData,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#AddModal').modal('hide');
+                          if(arg['succ']==2) {
+                              var tmp = new Array();
+                              tmp[0] = arg['user'];
+                              tmp[1] = arg['fp'];
+                              tmp[2] = arg['fd'];
+                              tmp[3] = arg['fc'];
+                              tmp[4] = arg['cs'];
+                              data.push(tmp);
+                              tj.innerHTML += '<tr id=' + i + '><td>' + arg['user'] + '</td><td>' + arg['fp'] + '</td><td>' + arg['fd'] + '</td><td>' + arg['fc'] + '</td><td>' + arg['cs'] + '</td><td>' + '<input type="button" onclick="test(this)" class="btn btn-primary" id=' + i + ' value="修改">' + '<input type="button" onclick="dele(this)" class="btn btn-primary" name=' + i + ' value="删除">' + '</td></tr>';
+                              i++;
+                          }
+                          else if(arg['succ']==1)
+                          {
+                              alert("此车已报废，无法维修！");
+                          }
+                          else if(arg['succ']==3)
+                          { alert("此车正在执行任务，无法维修！")
+                          }
+                          else {
+                              alert("我公司无此车，请重新输入车辆信息");
+                          }
+
+                    }
+                });
+            });
+        }
+    function test(obj){
+                    $('#eidtModal').modal('show');
+                //获取当前行的所以数据
+
+
+                $('#eidtModal input[name="cs"]').val(data[obj.id][4]);
+                trans=parseInt(obj.id)+1;
+}
+ function dele(obj){
+             $.ajax({
+                    url: '/FixDelete',
+                    type: 'GET',
+                    data: {ID: data[obj.name][0],fd: data[obj.name][2]},
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                        if(arg['succ']==1)
+                        {
+                             TR=document.getElementsByTagName("tr");
+                            for(var j=0;j<TR.length;j++)
+                            {
+                                if(TR[j].id==obj.name)
+                                {
+                                    TR[j].remove();
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    }
+                });
+}
+      function bindEditConfirm() {
+            $('#btnEditSave').click(function() {
+                /*获取表单所有信息方式
+                1、使用each循环
+                2、var data = $('#form表单的ID').serialize()   （优化推荐）
+                    data存为字典类型，可直接调用
+                */
+                  var postData={};
+                var n="user";
+                postData[n]=data[trans-1][0];
+                  var n="cs";
+                var v=$('#eidtModal input[name="cs"]').val();
+                postData[n]=v;
+                          var n="fd";
+                var v=data[trans-1][2];
+                postData[n]=v;
+                //alert(postData['gender']);
+                $.ajax({
+                    url: '/FixUpdate',
+                    type: 'GET',
+                    data: postData,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#eidtModal').modal('hide');
+                        //alert(tj.rows[trans].cells[1].innerText)
+
+                           // alert(arg['birth'])
+                        if(arg['succ']==1)
+                        {tj.rows[trans].cells[4].innerText=arg['cs'];}
+                        else{
+                            alert("该车正在运输途中，无法返厂维修！")
+                        }
+                             //alert(arg['location'])
+                                  // alert(arg['vt'])
+                    }
+                });
+            });
+        }
+</script>
+
+   {% endblock %}
+   <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

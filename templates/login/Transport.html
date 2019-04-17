@@ -1,0 +1,627 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}base{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+     <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">ChangetheDir</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" >车辆管理系统</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="my-nav">
+          <ul class="nav navbar-nav">
+            <li><a href="/Drivers/">司机信息</a></li>
+          </ul>
+        <ul class="nav navbar-nav">
+            <li><a href="/Car/">车辆信息</a></li>
+          </ul>
+         <ul class="nav navbar-nav">
+            <li><a href="/Fix/">维修信息</a></li>
+          </ul>
+         <ul class="nav navbar-nav">
+            <li><a href="/TransPort/">运输信息</a></li>
+          </ul>
+
+      <form class="navbar-form navbar-left" method="get" id="searchform" action="/searchtransport/">
+        <div class="form-group">
+            {% csrf_token %}
+          <input type="search" name="q" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+                       <select class="selectpicker show-tick form-control" style="width:90px;height: 38px" id="select1" name="grant" data-live-search="true">
+                    <option>按驾照号</option>
+                  <option>按车牌号</option>
+                    <option>按司机姓名</option>
+                    <option>按车品牌</option>
+                          <option>按运输任务</option>
+            </select>
+      </form>
+          <ul class="nav navbar-nav navbar-right">
+              {% if request.session.is_login %}
+                  <li><a href="#">Online：{{ request.session.user_name }}</a></li>
+                 <li><a href="/logout/">登出</a></li>
+              {% else %}
+                  <li><a href="/login/">登入</a></li>
+                  <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">注册<span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                        <li><a href="/register/" >Users</a></li>
+                           <li><a href="/Do_test/" >Administrators</a></li>
+                        </ul>
+                  </li>
+              {% endif %}
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+{% block content %}
+       <body style="background-image: url({% static 'images/bd4902e66089f12948875c6d440b7eb8_2_3_art.png' %});background-size:100%;" >
+    <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				     运输信息
+				</h1>
+
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="C_S" class="table">  </div>
+			<table class="table table-striped table-hover" id="tra">
+
+                <thead>
+					<tr>
+						<th>
+							司机驾照号
+						</th>
+						<th>
+                            司机姓名
+						</th>
+						<th>
+							车牌号
+						</th>
+                        <th>
+							车辆品牌
+						</th>
+                          <th>
+							车辆状态
+						</th>
+                        <th>
+							运输任务
+						</th>
+                           <th>
+							运输起点
+						</th>
+                           <th>
+							运输终点
+						</th>
+                        <th>
+							登记时间
+						</th>
+   <th>
+							最晚到达时间
+						</th>
+                          <th>
+							操作
+						</th>
+					</tr>
+				</thead>
+			</table>
+{#            </form>#}
+		</div>
+	</div>
+</div>
+    <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				     未指派任务
+				</h1>
+                   <input type="button" onclick="Add(this)" class="btn btn-primary" id='Ad' value="添加记录">
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="task" class="table"> </div>
+			<table class="table table-striped table-hover" id="trb">
+                <thead>
+					<tr>
+                        <th>
+							运输任务
+						</th>
+                           <th>
+							运输起点
+						</th>
+                           <th>
+							运输终点
+						</th>
+                           <th>
+							最晚到达时间
+						</th>
+
+                          <th>
+							操作
+						</th>
+					</tr>
+				</thead>
+			</table>
+{#            </form>#}
+		</div>
+	</div>
+</div>
+    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">任务指派</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fx" class="form-horizontal" >
+                    <input type="text" name="nid" style="display: none" />
+
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">运输任务</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="tw" placeholder="XXX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">运输起点</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="st" placeholder="XXX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">运输终点</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="ed" placeholder="XXX">
+                        </div>
+                    </div>
+                        <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">最晚到达时间</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="et" placeholder="XXX">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnAddSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eidtModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑信息</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="fx" class="form-horizontal" >
+                    <input type="text" name="nid" style="display: none" />
+                    <div class="form-group">
+                        <label for="ov" class="col-sm-2 control-label">车辆状态</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="cs" placeholder="XXX">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+      <div class="modal fade" id="zhipaisijiModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width:1200px" role="document">
+        <div class="modal-content">
+             <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="page-header">
+				<h1>
+				     未指派任务
+				</h1>
+			</div>
+{#            <form method="GET" action="/StockTrading/" id="x" name="q">#}
+            <div id="task" class="table"> </div>
+			<table class="table table-striped table-hover" id="tk">
+                <thead>
+					<tr>
+                        <th>
+							司机驾照号
+						</th>
+                           <th>
+							司机姓名
+						</th>
+                           <th>
+							工作状态
+						</th>
+                             <th>
+							驾照等级
+						</th>
+                           <th>
+							选择
+						</th>
+					</tr>
+				</thead>
+			</table>
+            	<table class="table table-striped table-hover" id="tp">
+                <thead>
+					<tr>
+                        <th>
+							车牌号
+						</th>
+                           <th>
+							车辆品牌
+						</th>
+                           <th>
+							工作状态
+						</th>
+                           <th>
+							选择
+						</th>
+					</tr>
+				</thead>
+			</table>
+{#            </form>#}
+                        <div class="modal-footer">
+                <span id="errorMsg" style="color: red;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="zhipaiSave(this)" id="zhipaiSave">保存</button>
+            </div>
+		</div>
+	</div>
+</div>
+        </div>
+    </div>
+</div>
+    <script src="/static/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript">
+    var dat = eval('{{dat|safe}}');
+var tao=document.getElementById("task");
+var to=document.getElementById("trb");
+var i=0;
+var s="";
+var da=eval('{{da|safe}}');
+var d=eval('{{d|safe}}');
+for(i=0;i<dat.length;i++)
+{
+   temp=dat[i][0];
+   temp2=dat[i][1];
+   to.innerHTML+='<tr id='+i+' ><td>'+dat[i][0]+'</td><td>'+dat[i][1]+'</td><td>'+dat[i][2]+'</td><td>'+dat[i][3]+'</td><td>'+'<input type="button" onclick="zhipaisiji(this)" class="btn btn-primary" id='+i+' value="指派">'+'</td></tr>';
+}
+var data = eval('{{data|safe}}');
+var tableobj=document.getElementById("C_S");
+var tj=document.getElementById("tra");
+var i=0;
+var sijiinfo=[];
+var chelianginfo=[];
+var taskinfo=[];
+              var x=document.getElementById("tk");
+
+                for(var k=0;k<da.length;k++)
+                {
+                    x.innerHTML+='<tr id='+k+'><td>'+da[k][0]+'</td><td>'+da[k][1]+'</td><td>'+da[k][2]+'</td><td>'+da[k][3]+'</td><td>'+'<input type="checkbox" onclick="siji(this)" class="btn btn-primary" id='+k+' name="che"  >'+'</td></tr>';
+                }
+                var y=document.getElementById("tp");
+                for(var k=0;k<d.length;k++)
+                {
+                    y.innerHTML+='<tr id='+k+'><td>'+d[k][0]+'</td><td>'+d[k][1]+'</td><td>'+d[k][2]+'</td><td>'+'<input type="checkbox" onclick="cheliang(this)" class="btn btn-primary" name='+k+' id="che" >'+'</td></tr>';
+                }
+for(i=0;i<data.length;i++)
+{
+   temp=data[i][0];
+   temp2=data[i][1];
+   tj.innerHTML+='<tr id='+i+'><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][4]+'</td><td>'+data[i][5]+'</td><td>'+data[i][7]+'</td><td>'+data[i][8]+'</td><td>'+data[i][6]+'</td><td>'+data[i][9]+'</td><td>'+'<input type="button" onclick="test(this)" class="btn btn-primary" id='+i+' value="修改">'+'<input type="button" onclick="dele(this)" class="btn btn-primary" name='+i+' value="删除">'+'</td></tr>';
+}
+var trans=0;
+ $(function () {
+        bindEditConfirm();
+        bindAdd();
+        zhipaiSave();
+    });
+     function Add(obj){
+                    $('#AddModal').modal('show');
+                //获取当前行的所以数据
+           $('#AddModal input[name="dn"]').val("");
+           $('#AddModal input[name="nm"]').val("");
+                $('#AddModal input[name="cn"]').val("");
+                $('#AddModal input[name="brand"]').val("");
+                $('#AddModal input[name="tw"]').val("");
+                $('#AddModal input[name="cs"]').val("");
+                $('#AddModal input[name="st"]').val("");
+                $('#AddModal input[name="ed"]').val("");
+                     $('#AddModal input[name="et"]').val("");
+}
+         function zhipaisiji(obj){
+                    $('#zhipaisijiModal').modal('show');
+                    var ip=document.getElementsByTagName("checkbox");
+                    taskinfo.push(obj.id);
+}
+        function zhipaiSave(obj)
+        {
+            $('#zhipaisijiModal').modal('hide');
+            var postData={};
+                var n="dn";
+                var v=da[sijiinfo[0]][0];
+                postData[n]=v;
+                var n="nm";
+                var v=da[sijiinfo[0]][1];
+                postData[n]=v;
+                var n="cn";
+                var v=d[chelianginfo[0]][0];
+                postData[n]=v;
+                var n="brand";
+                var v=d[chelianginfo[0]][1];
+                postData[n]=v;
+                var n="cs";
+                var v="运输中";
+                postData[n]=v;
+                var n="tw";
+                var v= dat[taskinfo[0]][0];
+                postData[n]=v;
+                     var n="st";
+                var v=dat[taskinfo[0]][1];
+                postData[n]=v;
+                     var n="ed";
+                var v=dat[taskinfo[0]][2];
+                postData[n]=v;
+                  var n="et";
+                var v=dat[taskinfo[0]][3];
+                postData[n]=v;
+                console.log(postData);
+                 $.ajax({
+                    url: '/TransportAdd',
+                    type: 'GET',
+                    data: postData,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#AddModal').modal('hide');
+                          if(arg['succ']==2) {
+                              var tmp = new Array();
+                              tmp[0] = arg['dn'];
+                              tmp[1] = arg['nm'];
+                              tmp[2] = arg['cn'];
+                              tmp[3] = arg['brand'];
+                              tmp[4] = arg['tw'];
+                              tmp[5]=arg["cs"];
+                              tmp[6]=arg["rt"];
+                              tmp[7]=arg["st"];
+                              tmp[8]=arg["ed"];
+                              tmp[9]=arg["et"];
+                              data.push(tmp);
+                              tj.innerHTML += '<tr id=' + i + '><td>' + arg['dn'] + '</td><td>' + arg['nm'] + '</td><td>' + arg['cn'] + '</td><td>' + arg['brand'] + '</td><td>' +arg['cs']+'</td><td>'+ arg['tw'] + '</td><td>' +arg['st']+'</td><td>'+arg['ed']+'</td><td>'+arg["rt"]+'</td><td>'+arg['et']+'</td><td>'+'<input type="button" onclick="test(this)" class="btn btn-primary" id=' + i + ' value="修改">' + '<input type="button" onclick="dele(this)" class="btn btn-primary" name=' + i + ' value="删除">' + '</td></tr>';
+                              i++;
+                              o={};
+                              o["ID"]=dat[taskinfo[0]][4];
+                              o["t"]=taskinfo[0];
+                               $.ajax({
+                            url: '/TaskDelete',
+                            type: 'GET',
+                    data:o,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(ar) {
+                          $('#AddModal').modal('hide');
+                          if(ar['suc']==1)
+                          {
+                            for(var k=0;k<to.rows.length;k++)
+                            {
+
+                                if(to.rows[k].id==ar['t'])
+                                {
+                                    to.deleteRow(k);
+                                    break;
+                                }
+                            }
+                          }
+                    }
+                })
+                          }
+
+                          else{
+                              alert("您输入的司机信息,车辆信息不存在或错误,请重新输入！")
+                          }
+                                          taskinfo=[];
+                chelianginfo=[];
+                sijiinfo=[];
+
+                    }
+                });
+
+        }
+        function siji(obj)
+        {
+            console.log(da[obj.id][3]);
+                if(da[obj.id][3]=="2")
+                {
+                    alert(da[obj.id][3]);
+                    sijiinfo.push(obj.id);
+                }
+                else
+                {
+                    if(dat[taskinfo[0]][0]=="载人")
+                    {
+                         alert(da[obj.id][3]);
+                        sijiinfo.push(obj.id);
+                    }
+                    else{
+                        alert("您选择的司机不能够进行载货任务，请重新选择");
+                        x=document.getElementsByName("che");
+                        for(var j=0;j<x.length;j++)
+                        {
+                           if(x[j].id==obj.id)
+                           {
+
+                                alert("fuckyou");
+                               obj.checked=false;
+                                break;
+                           }
+                        }
+                    }
+                }
+
+        }
+                function cheliang(obj)
+        {
+                chelianginfo.push(obj.name);
+        }
+    function bindAdd() {
+            $('#btnAddSave').click(function() {
+                /*获取表单所有信息方式
+                1、使用each循环
+                2、var data = $('#form表单的ID').serialize()   （优化推荐）
+                    data存为字典类型，可直接调用
+                */
+                var postData={};
+                var n="tw";
+                var v=$('#AddModal input[name="tw"]').val();
+                postData[n]=v;
+                     var n="st";
+                var v=$('#AddModal input[name="st"]').val();
+                postData[n]=v;
+                     var n="ed";
+                var v=$('#AddModal input[name="ed"]').val();
+                postData[n]=v;
+                  var n="et";
+                var v=$('#AddModal input[name="et"]').val();
+                postData[n]=v;
+                //alert(postData['gender']);
+                $.ajax({
+                    url: '/TaskAdd',
+                    type: 'GET',
+                    data: postData,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#AddModal').modal('hide');
+                          tmp=[];
+
+                        tmp.push(arg['tw']);
+                        tmp.push(arg['st']);
+                        tmp.push(arg['ed']);
+                        tmp.push(arg['et']);
+                        tmp.push(arg['ID']);
+                        dat.push(tmp);
+                             to.innerHTML+='<tr id='+i+' ><td>'+arg['tw']+'</td><td>'+arg['st']+'</td><td>'+arg['ed']+'</td><td>'+arg['et']+'</td><td>'+'<input type="button" onclick="zhipaisiji(this)" class="btn btn-primary" id='+i+' value="指派">'+'</td></tr>';
+                    }
+                });
+            });
+        }
+    function test(obj){
+                    $('#eidtModal').modal('show');
+                //获取当前行的所以数
+                $('#eidtModal input[name="cs"]').val(data[obj.id][4]);
+                trans=parseInt(obj.id)+1;
+}
+ function dele(obj){
+             $.ajax({
+                    url: '/TransportDelete',
+                    type: 'GET',
+                    data: {ID: data[obj.name][0],car:data[obj.name][2],rt: data[obj.name][6]},
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                        if(arg['succ']==1)
+                        {
+                             TR=document.getElementsByTagName("tr");
+                            for(var j=0;j<TR.length;j++)
+                            {
+                                if(TR[j].id==obj.name)
+                                {
+                                    TR[j].remove();
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    }
+                });
+}
+      function bindEditConfirm() {
+            $('#btnEditSave').click(function() {
+                /*获取表单所有信息方式
+                1、使用each循环
+                2、var data = $('#form表单的ID').serialize()   （优化推荐）
+                    data存为字典类型，可直接调用
+                */
+                  var postData={};
+                var n="user";
+                postData[n]=data[trans-1][0];
+                  var n="cs";
+                var v=$('#eidtModal input[name="cs"]').val();
+                postData[n]=v;
+                          var n="car";
+                var v=data[trans-1][2];
+                postData[n]=v;
+                      var n="rt";
+                var v=data[trans-1][6];
+                postData[n]=v;
+                //alert(postData['gender']);
+                $.ajax({
+                    url: '/TransportUpdate',
+                    type: 'GET',
+                    data: postData,
+                    traditional:true,
+                    dataType: 'JSON',
+                    success: function(arg) {
+                          $('#eidtModal').modal('hide');
+                        //alert(tj.rows[trans].cells[1].innerText)
+
+                           // alert(arg['birth'])
+                        tj.rows[trans].cells[4].innerText=arg['cs'];
+                             //alert(arg['location'])
+                                  // alert(arg['vt'])
+                    }
+                });
+            });
+        }
+</script>
+
+   {% endblock %}
+   <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
